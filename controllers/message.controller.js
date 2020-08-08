@@ -23,7 +23,7 @@ exports.FETCH_MESSAGES = async (req, res, next) => {
     const { room_id } = req.params
 
     try {
-        const message = await Message.find({ room_id })
+        const messages = await Message.find({ room_id })
             .sort({ createdAt: -1 })
             .limit(100)
 

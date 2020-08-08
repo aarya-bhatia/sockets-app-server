@@ -1,7 +1,7 @@
 const db = require('../models')
 const User = db.user
 
-exports.SIGNUP = async (req, res) => {
+exports.SIGNUP = async (req, res, next) => {
     const { username, password } = req.body
 
     const user = new User({ username, password })
@@ -14,7 +14,7 @@ exports.SIGNUP = async (req, res) => {
     }
 }
 
-exports.LOGIN = async (req, res) => {
+exports.LOGIN = async (req, res, next) => {
     const { username, password } = req.body
 
     try {
@@ -31,10 +31,9 @@ exports.LOGIN = async (req, res) => {
     } catch (err) { next(err) }
 }
 
-exports.SEARCH = async (req, res) => {
-    const { search } = req.body
+exports.SEARCH = async (req, res, next) => {
     try {
-        const users = await userModel.find({ "username": { "$regex": search, "$options": "i" } })
+        const users = await User.find({ "username": { "$regex": req.query.search, "$options": "i" } })
         res.status(200).send(users)
     } catch (err) {
         next(err)

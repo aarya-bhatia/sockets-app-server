@@ -17,7 +17,7 @@ require('./routes/message.routes')(app)
 
 // Error Handler
 app.use((err, req, res, next) => {
-    res.status(500).send({ message: 'Oops something went wrong!' })
+    res.status(500).send({ message: err.message || 'Oops something went wrong!' })
 })
 
 // Databse setup
