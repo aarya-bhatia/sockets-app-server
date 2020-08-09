@@ -2,7 +2,6 @@ const express = require('express')
 const socket = require('socket.io')
 const cors = require('cors')
 const db = require('./models')
-const roomModel = require('./models/room.model')
 
 // App setup
 const app = express()
@@ -40,90 +39,45 @@ const server = app.listen(process.env.PORT || 3000, () => console.log('server ru
 // socket.io setup
 const io = socket(server)
 
-io.once('connection', socket => {
-    console.log('connected to socket root => ' + socket.id)
-    io.on('online', payload => {
-        io.sockets.emit('online', payload)
-    })
-
-    io.on('offline', payload => {
-        io.sockets.emit('offline', payload)
-    })
-})
-
 // chat namespace
 const chatNsp = io.of('/chats');
 
-//todo
-chatNsp.use((socket, next) => {
-    // ensure the user has sufficient rights
-    next();
-});
+// //todo
+// chatNsp.use((socket, next) => {
+//     // ensure the user has sufficient rights
+//     next();
+// });
 
 chatNsp.on('connection', socket => {
-    console.log('made connection in chats namespace => ', socket.id)
+    console.log('made connection in chats socket => ', socket.id)
 
     // Join a room 
-    socket.on('subscribe', function (room, user) {
+    socket.on('subscribe', function ({ room, user }) {
         console.log('joining room', room);
         socket.join(room);
-        chatNsp.to(room).emit('user joined', { room, user })
+        chatNsp.to(room).emit('USER_JOINED', user)
     })
 
     // Leave a room
-    socket.on('unsubscribe', function (room, user) {
+    socket.on('unsubscribe', function ({ room, user }) {
         console.log('leaving room', room);
+        chatNsp.to(room).emit('USER_LEFT', user)
         socket.leave(room);
-        chatNsp.to(room).emit('user leaving', { room, user })
     })
 
     // User typing
-    socket.on('user typing', function (room, user, status) {
+    socket.on('user typing', function ({ room, user, status }) {
         if (status) {
             console.log(`${user} is typing in room ${room}.`)
         }
         else {
             console.log(`${user} stopped typing in room ${room}.`)
         }
-        chatNsp.to(room).emit('user typing', { room, user, status })
+        chatNsp.to(room).emit('USER_TYPING', { user, status })
     })
 
     // send message
-    socket.on('new message', function(room, user, content, time) {
-        chatNsp.to(room).emit('new message', { room, user, content, time })
+    socket.on('new message', function ({ room, user, content }) {
+        chatNsp.to(room).emit('NEW_MESSAGE', { user, content })
     })
 });
-
-// old code
-/*
-io.on('connection', socket => {
-    console.log('made connection to socket => ', socket.id)
-
-    socket.on('user joined', payload => {
-        io.sockets.emit('user joined', payload)
-    })
-
-    socket.on('user typing', payload => {
-        //console.log('user is typing')
-        io.sockets.emit('user typing', payload)
-    })
-
-
-    socket.on('user leaving', payload => {
-        io.sockets.emit('user leaving', payload)
-    })
-
-    socket.on('user has typed', payload => {
-        //console.log('user has typed')
-        io.sockets.emit('user has typed', payload)
-    })
-
-    socket.on('new message', payload => {
-        io.sockets.emit('new message', payload)
-    })
-
-    io.on('disconnect', () => {
-        console.log('disconnected from socket')
-    })
-})
-*/
