@@ -6,7 +6,7 @@ exports.SEND_MESSAGE = async (req, res, next) => {
     const { room_id } = req.params
 
     const message = new Message({
-        room_id,
+        room: room_id,
         ...req.body
     })
 
@@ -23,7 +23,7 @@ exports.FETCH_MESSAGES = async (req, res, next) => {
     const { room_id } = req.params
 
     try {
-        const messages = await Message.find({ room_id })
+        const messages = await Message.find({ room: room_id })
             .sort({ createdAt: -1 })
             .limit(100)
 

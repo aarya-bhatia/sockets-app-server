@@ -39,3 +39,46 @@ exports.SEARCH = async (req, res, next) => {
         next(err)
     }
 }
+
+exports.JOIN_ROOM = async (req, res, next) => {
+    const room = req.body
+    try {
+        await User.update({
+            "username": {
+                $in: room.members
+            }
+        },
+            {
+                $push: {
+                    rooms: room
+                }
+            },
+            {
+                multi: true
+            }
+        )
+
+        res.status(200).send()
+    } catch (err) {
+        next(err)
+    }
+}
+
+exports.LEAVE_ROOM = async (req, res, next) => {
+    const { user, room } = req.body
+    try {
+        await User.updateOne({
+            "username": user
+        },
+            {
+                $pull: {
+                    rooms: room
+                }
+            }
+        )
+
+        res.status(200).send()
+    } catch (err) {
+        next(err)
+    }
+}

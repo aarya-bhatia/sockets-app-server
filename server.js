@@ -77,7 +77,13 @@ chatNsp.on('connection', socket => {
     })
 
     // send message
-    socket.on('new message', function ({ room, user, content }) {
-        chatNsp.to(room).emit('NEW_MESSAGE', { user, content })
+    socket.on('new message', function (data) {
+        chatNsp.to(data.room).emit('NEW_MESSAGE', data)
+    })
+
+    // new room created
+    socket.on('new room', function (room) {
+        // emit to all sockets in namespace
+        chatNsp.emit('NEW_ROOM', room)
     })
 });
