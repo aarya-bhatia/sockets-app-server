@@ -4,6 +4,7 @@
   "description": "complete chat application with socket and vue",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Aarya",
@@ -14,5 +15,8 @@
     "express": "^4.17.1",
     "mongoose": "^5.9.27",
     "socket.io": "^2.3.0"
+  },
+  "engines": {
+    "node": "10.x"
   }
 }

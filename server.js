@@ -39,51 +39,8 @@ const server = app.listen(process.env.PORT || 3000, () => console.log('server ru
 // socket.io setup
 const io = socket(server)
 
-// chat namespace
-const chatNsp = io.of('/chats');
+const connections = []
+const users = {}
 
-// //todo
-// chatNsp.use((socket, next) => {
-//     // ensure the user has sufficient rights
-//     next();
-// });
-
-chatNsp.on('connection', socket => {
-    console.log('made connection in chats socket => ', socket.id)
-
-    // Join a room 
-    socket.on('subscribe', function ({ room, user }) {
-        console.log('joining room', room);
-        socket.join(room);
-        chatNsp.to(room).emit('USER_JOINED', user)
-    })
-
-    // Leave a room
-    socket.on('unsubscribe', function ({ room, user }) {
-        console.log('leaving room', room);
-        chatNsp.to(room).emit('USER_LEFT', user)
-        socket.leave(room);
-    })
-
-    // User typing
-    socket.on('user typing', function ({ room, user, status }) {
-        if (status) {
-            console.log(`${user} is typing in room ${room}.`)
-        }
-        else {
-            console.log(`${user} stopped typing in room ${room}.`)
-        }
-        chatNsp.to(room).emit('USER_TYPING', { user, status })
-    })
-
-    // send message
-    socket.on('new message', function (data) {
-        chatNsp.to(data.room).emit('NEW_MESSAGE', data)
-    })
-
-    // new room created
-    socket.on('new room', function (room) {
-        // emit to all sockets in namespace
-        chatNsp.emit('NEW_ROOM', room)
-    })
-});
+require('./socketHandler')(io, connections)
+require('./socketHandler/chat')(io, users)
