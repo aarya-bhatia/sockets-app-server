@@ -1,3 +1,3 @@
-require('dotenv').config();
-exports.DB_URL = process.env.DB_URL;
+require("dotenv").config();
+exports.URI = "mongodb://localhost:27017/ChatAppDB";
 exports.ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
