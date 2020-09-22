@@ -34,5 +34,13 @@ module.exports = (mongoose) => {
     });
   };
 
+  db.generateId = function () {
+    return new mongoose.Types.ObjectId();
+  };
+
+  db.ObjectId = function (id) {
+    return new mongoose.Types.ObjectId(id);
+  };
+
   return db;
 };

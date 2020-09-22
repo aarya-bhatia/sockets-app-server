@@ -1,4 +1,6 @@
 module.exports = (router, db) => {
+  router.get("/contacts/:user_id", async (req, res, next) => {});
+
   router.post("/contacts/:user_id/send/:contact_id", async (req, res, next) => {
     const { user_id, contact_id } = req.params;
     try {

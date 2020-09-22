@@ -4,7 +4,7 @@ module.exports = (mongoose) => {
     content: String,
     author_id: Number,
     author_name: String,
-    date: String,
+    date: Date,
     time: String,
     seenBy: [],
     likedBy: [],

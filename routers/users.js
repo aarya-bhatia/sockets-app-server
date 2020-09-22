@@ -20,6 +20,7 @@ module.exports = (router, db) => {
       if (!user) {
         return res.status(400).json({ message: "This name does not exist." });
       }
+
       return res.status(200).json(user);
     } catch (err) {
       next(err);

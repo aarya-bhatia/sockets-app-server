@@ -3,7 +3,7 @@ module.exports = (router, db) => {
     try {
       const chats = await db.Chat.find(
         { "users._id": req.params.user_id },
-        { messages: { $slice: -50 } }
+        { messages: { $slice: -30 } } // return last n messages of each chat
       );
       res.json({ chats });
     } catch (err) {
