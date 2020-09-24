@@ -26,4 +26,21 @@ module.exports = (router, db) => {
       next(err);
     }
   });
+
+  router.post("/chats/:chat_id/seen-by/:user_id", async (req, res, next) => {
+    try {
+      const { chat_id, user_id } = req.params;
+      await db.Chat.updateOne(
+        { _id: chat_id, seenAt: { $elemMatch: { user_id } } },
+        {
+          $set: {
+            "seenAt.$.time": new Date(),
+          },
+        }
+      );
+      res.status(200).send();
+    } catch (err) {
+      next(err);
+    }
+  });
 };

@@ -6,7 +6,6 @@ module.exports = (mongoose) => {
     author_name: String,
     date: Date,
     time: String,
-    seenBy: [],
     likedBy: [],
     replyTo: mongoose.Types.ObjectId,
   });

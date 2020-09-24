@@ -8,6 +8,7 @@ module.exports = (mongoose) => {
         },
       ],
       messages: [],
+      seenAt: [],
     },
     { timestamps: true }
   );

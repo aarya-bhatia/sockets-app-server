@@ -21,15 +21,14 @@ const socketIO = require("socket.io")(server);
 const socketController = require("./controllers/socket")(socketIO);
 
 socketIO.on("connection", function (socket) {
-  const socket_id = socket.id;
-  console.log("socket connection: " + socket_id);
+  console.log("socket connection: " + socket.id);
 
-  socketIO.on("register", function (user) {
-    socketController.register(user, socket_id);
+  socket.on("register", function (user) {
+    socketController.register(user, socket.id);
   });
 
-  socketIO.on("disconnect", function () {
-    socketController.unregister(socket_id);
+  socket.on("disconnect", function () {
+    socketController.unregister(socket.id);
   });
 });
 

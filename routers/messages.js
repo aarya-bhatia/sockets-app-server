@@ -17,7 +17,17 @@ module.exports = (router, db, socketController) => {
     const { chat_id, content, author_id, author_name, recipient_id } = req.body;
 
     const date = new Date();
-    const time = date.toLocaleTimeString().substring(0, 5); // hh:mm
+
+    let hours = date.getHours().toString();
+    let mins = date.getMinutes().toString();
+    if (hours.length === 1) {
+      hours = `0${hours}`;
+    }
+    if (mins.length === 1) {
+      mins = `0${mins}`;
+    }
+
+    const time = `${hours}:${mins}`;
 
     // create message obj
     const message = {
@@ -44,7 +54,7 @@ module.exports = (router, db, socketController) => {
       await db.Chat.findByIdAndUpdate(chat_id, {
         $push: { messages: message },
       });
-      res.sendStatus(200);
+      res.status(200).json(message);
     } catch (err) {
       next(err);
     }

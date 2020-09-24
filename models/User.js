@@ -1,13 +1,17 @@
 module.exports = (mongoose) => {
   const userSchema = new mongoose.Schema(
     {
-      _id: String,
       name: {
         type: String,
         required: true,
       },
-      password: String,
-      email: String,
+      password: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+      },
       contacts: [],
       outgoing_requests: [],
       incoming_requests: [],

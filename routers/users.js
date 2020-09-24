@@ -1,12 +1,28 @@
+const md5 = require("md5");
+
 module.exports = (router, db) => {
-  router.post("/signup", async (req, res, next) => {
+  router.get("/users/:user_id", async (req, res, next) => {
     try {
-      let user = await db.User.findOne({ name: req.body.name });
+      const user = await db.User.findById(req.params.user_id);
+      res.status(200).json(user);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.post("/signup", async (req, res, next) => {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Please provide a value for all fields" });
+    }
+    try {
+      let user = await db.User.findOne({ email });
       if (user) {
-        console.log(user);
-        return res.status(400).json({ message: "This name is taken" });
+        return res.status(400).json({ message: "This name or email is taken" });
       }
-      user = await User.create(req.body);
+      user = await db.User.create({ name, email, password: md5(password) });
       return res.status(200).json(user);
     } catch (err) {
       next(err);
@@ -14,14 +30,17 @@ module.exports = (router, db) => {
   });
 
   router.post("/login", async (req, res, next) => {
-    const { name } = req.body;
+    const { email, password } = req.body;
     try {
-      const user = await db.User.findOne({ name });
+      const user = await db.User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ message: "This name does not exist." });
+        return res.status(400).json({ message: "Email not found" });
       }
-
-      return res.status(200).json(user);
+      if (user.password === md5(password)) {
+        return res.status(200).json(user);
+      } else {
+        return res.status(400).json({ message: "Wrong Password" });
+      }
     } catch (err) {
       next(err);
     }

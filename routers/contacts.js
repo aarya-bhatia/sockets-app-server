@@ -1,6 +1,4 @@
 module.exports = (router, db) => {
-  router.get("/contacts/:user_id", async (req, res, next) => {});
-
   router.post("/contacts/:user_id/send/:contact_id", async (req, res, next) => {
     const { user_id, contact_id } = req.params;
     try {
@@ -70,6 +68,10 @@ module.exports = (router, db) => {
             { _id: contact_id, name: contact.name },
           ],
           messages: [],
+          seenAt: [
+            { user_id: user_id, time: new Date() },
+            { user_id: contact_id, time: new Date() },
+          ],
         });
 
         res.sendStatus(200);
