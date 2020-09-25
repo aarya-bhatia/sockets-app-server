@@ -15,6 +15,20 @@ module.exports = (mongoose) => {
       contacts: [],
       outgoing_requests: [],
       incoming_requests: [],
+      country: {
+        type: String,
+        default: "NA",
+      },
+      gender: {
+        type: String,
+        enum: ["Male", "Female", "NA"],
+        default: "NA",
+      },
+      privacy: {
+        type: String,
+        enum: ["Public", "Private"],
+        defualt: "Public",
+      },
     },
     { timestamps: true }
   );
