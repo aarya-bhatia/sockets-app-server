@@ -3,12 +3,8 @@ const md5 = require("md5");
 module.exports = (router, db) => {
   router.get("/users", async (req, res, next) => {
     try {
-      // only search for public accounts to begin with
-      let query = {
-        privacy: "Public",
-      };
-
       // build query with optional query params
+      let query = {};
 
       if (req.query.name) {
         query["name"] = {
